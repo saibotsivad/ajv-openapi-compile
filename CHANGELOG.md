@@ -22,6 +22,10 @@ Change categories are:
 ### Removed
 ### Security
 
+## [0.0.2] - 2021-10-19
+### Fixed
+- Documentation for the CLI command.
+
 ## [0.0.1] - 2021-10-19
 ### Added
 - Basic functionality: a module and CLI tool.
@@ -32,3 +36,4 @@ Change categories are:
 
 [Unreleased]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...HEAD
 [0.0.1]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...v0.0.1
+[0.0.2]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.1...v0.0.2

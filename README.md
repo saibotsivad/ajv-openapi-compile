@@ -15,7 +15,7 @@ npm install --save-dev ajv-openapi-compile
 You can use the CLI tool, as part of your build process:
 
 ```shell
-ajv-openapi-compile --definition=/path/to/openapi.json --out=/path/to/compiled.cjs
+ajv-openapi-compile --definition=/path/to/openapi.json --output=/path/to/compiled.cjs
 ```
 
 **Note:** The AJV compiler outputs a single CommonJS module, so you'll need to write it with the appropriate filename extension. E.g. if your project is `"type": "module"` you'll need to use a `.cjs` extension.
