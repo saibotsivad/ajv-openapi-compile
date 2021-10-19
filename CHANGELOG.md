@@ -22,6 +22,10 @@ Change categories are:
 ### Removed
 ### Security
 
+## [0.0.1] - 2021-10-19
+### Added
+- Basic functionality: a module and CLI tool.
+
 ## [0.0.0] - 2021-10-19
 ### Added
 - Created the base project.

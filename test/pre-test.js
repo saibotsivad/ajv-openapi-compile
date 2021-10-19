@@ -1,10 +1,7 @@
 import { writeFileSync } from 'node:fs'
 import { compile } from '../src/index.js'
+import { definition } from './definition.js'
 
-const codeString = compile({
+const codeString = compile(definition)
 
-})
-
-// Note that AJV outputs CommonJS formatted code, so you'll need to
-// write it out to `.cjs` if your `package.json` has `type: module`.
-writeFileSync('./test/schemas.cjs')
+writeFileSync('./test/compiled.cjs', codeString, 'utf8')

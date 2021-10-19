@@ -1,21 +1,23 @@
 {
   "name": "ajv-openapi-compile",
   "version": "0.0.0",
-  "description": "Given an OpenAPI definition, turn into a compiled AJV module.",
+  "description": "Generate a compiled AJV validation module from an OpenAPI definition.",
+  "bin": "bin.js",
   "type": "module",
-  "module": "dist/index.mjs",
-  "unpkg": "dist/index.min.js",
-  "main": "dist/index.js",
-  "types": "index.d.ts",
+  "module": "dist/index.js",
+  "main": "dist/index.cjs",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "test": "uvu src",
+    "test": "npm run test-js && npm run test-json && npm run test-script",
+    "test-json": "./bin.js -d ./test/definition.json -o ./test/compiled.cjs && node test/test.js",
+    "test-js": "./bin.js -d ./test/definition.js -o ./test/compiled.cjs && node test/test.js",
+    "test-script": "node ./test/pre-test.js && node test/test.js",
     "build": "bundt src/index.js"
   },
   "repository": {
@@ -26,6 +28,13 @@
     "ajv",
     "openapi",
     "cloudflare"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "bin.js",
+    "README.md",
+    "LICENSE.md"
   ],
   "author": {
     "name": "Tobias Davis",
@@ -38,11 +47,12 @@
   },
   "homepage": "https://github.com/saibotsivad/ajv-openapi-compile",
   "devDependencies": {
-    "bundt": "^1.1.5",
+    "bundt": "github:saibotsivad/bundt",
     "uvu": "^0.5.2"
   },
   "dependencies": {
     "ajv": "^8.6.3",
-    "ajv-formats": "^2.1.1"
+    "ajv-formats": "^2.1.1",
+    "mri": "^1.2.0"
   }
 }

@@ -18,6 +18,7 @@
       <excludeFolder url="file://$MODULE_DIR$/app/falcon/build" />
       <excludeFolder url="file://$MODULE_DIR$/deploy/cloudflare-static/public/vendor" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/falcon" />
+      <excludeFolder url="file://$MODULE_DIR$/dist" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
