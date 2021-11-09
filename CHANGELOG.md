@@ -22,7 +22,7 @@ Change categories are:
 ### Removed
 ### Security
 
-## [0.0.3] - 2021-11-08
+## [0.0.3-0.0.4] - 2021-11-08
 ### Fixed
 - Bump version of `ajv` to try getting rid of a weird bug.
 
@@ -39,6 +39,6 @@ Change categories are:
 - Created the base project.
 
 [Unreleased]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...HEAD
-[0.0.3]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.2...v0.0.3
+[0.0.3-0.0.4]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...v0.0.1
