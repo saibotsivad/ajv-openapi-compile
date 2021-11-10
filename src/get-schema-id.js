@@ -1,4 +1,4 @@
-const getSchemaId = (schemaTree, ...keypath) => {
+const __getSchemaId = (schemaTree, ...keypath) => {
 	const _getSchema = (...keys) => {
 		let actualKeys = []
 		let node = schemaTree

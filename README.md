@@ -41,7 +41,7 @@ The compiled code is an ES string, and (due to technical limitations with AJV) e
 
 ```js
 import schemas from '/path/to/compiled.js'
-console.log(schemas) // => { getSchema: Function, getSchemaId: Function, '#/components/schemas/task': Function, ... }
+console.log(schemas) // => { getSchema: Function, getId: Function, '#/components/schemas/task': Function, ... }
 ```
 
 If you know the fully-resolved schema id, you can access the validation function explicitly:
@@ -53,7 +53,7 @@ const valid = validate({ code: 404 })
 if (!valid) console.log(validate.errors)
 ```
 
-If you don't know the fully-resolved schema id, you can use the `getSchemaId` to get it, or `getSchema` to get the validation function directly. These functions will resolve all `$ref` paths to get to the actual schema id/function.
+If you don't know the fully-resolved schema id, you can use the `getId` to get it, or `getSchema` to get the validation function directly. These functions will resolve all `$ref` paths to get to the actual schema id/function.
 
 For example, given a definition like this:
 
@@ -94,12 +94,12 @@ Using the `getSchema` function to get the schema:
 import schemas from '/path/to/compiled'
 const path = [ 'paths', '/api/v1/users/{userId}', 'get', 'responses', 'default', 'content', 'application/json', 'schema' ]
 // get the schema id:
-schemas.getSchemaId(...path) // => "#/components/schema/error"
+schemas.getId(...path) // => "#/components/schema/error"
 // or get the validation function:
 const validate = schemas.getSchema(...path) // => function
 ```
 
-> **Note:** the functions take `n` parameters, *not* an array. E.g. you need `getSchemaId('path', 'to', 'thing')` and *not* `getSchemaId([ 'path', 'to', 'thing' ])`.
+> **Note:** the functions take `n` parameters, *not* an array. E.g. you need `getId('path', 'to', 'thing')` and *not* `getId([ 'path', 'to', 'thing' ])`.
 
 ## CLI `ajv-openapi-compile`
 

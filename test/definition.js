@@ -27,12 +27,15 @@ export const definition = {
 					}
 				}
 			},
-			aliasedRequestBody: {
+			aliasedTask: {
 				$ref: '#/components/requestBodies/task'
 			}
 		},
 		headers: {
-			aliasedHeader: {
+			cookie: {
+				schema: { type: 'string' }
+			},
+			aliasedCookie: {
 				$ref: '#/components/headers/cookie'
 			}
 		},
@@ -63,6 +66,9 @@ export const definition = {
 						type: 'string',
 					},
 				},
+			},
+			aliasedError: {
+				$ref: '#/components/schemas/error'
 			},
 			meta: {
 				type: 'object',
@@ -120,7 +126,7 @@ export const definition = {
 		},
 	},
 	paths: {
-		'/api/v1/login': {
+		'/login': {
 			post: {
 				responses: {
 					204: {
@@ -140,7 +146,7 @@ export const definition = {
 				},
 			}
 		},
-		'/api/v1/tasks': {
+		'/tasks': {
 			get: {
 				responses: {
 					200: {
@@ -201,7 +207,7 @@ export const definition = {
 				},
 			},
 		},
-		'/api/v1/tasks/{taskId}': {
+		'/tasks/{taskId}': {
 			parameters: [
 				{
 					$ref: '#/components/parameters/taskId',
@@ -229,7 +235,7 @@ export const definition = {
 				},
 			},
 		},
-		'/api/v1/users/{userId}': {
+		'/users/{userId}': {
 			parameters: [
 				{
 					name: 'userId',

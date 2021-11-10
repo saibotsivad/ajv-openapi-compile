@@ -151,8 +151,11 @@ export const compileAndBuild = async (definitionObject) => {
 
 const __schemaTree = ${JSON.stringify(schemaTree)};
 ${getSchemaIdFunction};
-exports['getId'] = (...keypath) => getSchemaId(__schemaTree, ...keypath);
-exports['getSchema'] = (...keypath) => getSchemaId(__schemaTree, ...keypath);
+const __getKeypath = opt => opt.length === 1 && typeof opt[0] === 'string'
+	? opt[0].replace(/^#\\//, '').split('/').map(s => decodeURIComponent(s))
+	: opt;
+exports['getId'] = (...opt) => __getSchemaId(__schemaTree, ...__getKeypath(opt));
+exports['getSchema'] = (...opt) => exports[__getSchemaId(__schemaTree, ...__getKeypath(opt))];
 `
 
 	const virtualLoader = () => ({
