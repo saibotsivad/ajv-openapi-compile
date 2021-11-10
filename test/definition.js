@@ -11,8 +11,8 @@ export const definition = {
 				},
 			},
 			aliasedTaskId: {
-				$ref: '#/components/parameters/taskId'
-			}
+				$ref: '#/components/parameters/taskId',
+			},
 		},
 		requestBodies: {
 			task: {
@@ -21,23 +21,23 @@ export const definition = {
 						schema: {
 							type: 'object',
 							properties: {
-								id: { type: 'string' }
-							}
-						}
-					}
-				}
+								id: { type: 'string' },
+							},
+						},
+					},
+				},
 			},
 			aliasedTask: {
-				$ref: '#/components/requestBodies/task'
-			}
+				$ref: '#/components/requestBodies/task',
+			},
 		},
 		headers: {
 			cookie: {
-				schema: { type: 'string' }
+				schema: { type: 'string' },
 			},
 			aliasedCookie: {
-				$ref: '#/components/headers/cookie'
-			}
+				$ref: '#/components/headers/cookie',
+			},
 		},
 		responses: {
 			error: {
@@ -55,8 +55,8 @@ export const definition = {
 				},
 			},
 			aliasedError: {
-				$ref: '#/components/responses/error'
-			}
+				$ref: '#/components/responses/error',
+			},
 		},
 		schemas: {
 			error: {
@@ -68,7 +68,7 @@ export const definition = {
 				},
 			},
 			aliasedError: {
-				$ref: '#/components/schemas/error'
+				$ref: '#/components/schemas/error',
 			},
 			meta: {
 				type: 'object',
@@ -135,16 +135,16 @@ export const definition = {
 							'Set-Cookie': {
 								description: 'The session cookie.',
 								schema: {
-									type: 'string'
-								}
-							}
-						}
+									type: 'string',
+								},
+							},
+						},
 					},
 					default: {
 						$ref: '#/components/responses/error',
 					},
 				},
-			}
+			},
 		},
 		'/tasks': {
 			get: {

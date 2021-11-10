@@ -24,30 +24,24 @@ You can also use in your build scripts:
 import { compile } from 'ajv-openapi-compile'
 import { readFile, writeFile } from 'node:fs'
 const definition = JSON.parse(await readFile('/path/to/openapi.json', 'utf8'))
-const { standalone } = compile(definition)
-await writeFile('/path/to/compiled.js', standalone, 'utf8')
+const { code } = await compile(definition)
+await writeFile('/path/to/compiled.js', code, 'utf8')
 ```
 
-The output from the `compile` function contains the following properties:
-
-- `standalone` - The AJV standalone code, with all imports/requires resolved and concatenated into the single string.
-- `unresolved` - The AJV standalone code, but no imports/requires are resolved. (You'd use this with your own build system.)
-
-The CLI tool always outputs the `standalone` version, unless you pass in the `--standalone=false` parameter.
+The output from the `compile` function contains only the `code` property, which has all imports/requires resolved and concatenated into the single string.
 
 ## Use Built Code
 
-The compiled code is an ES string, and (due to technical limitations with AJV) exports a single *default* object which is the map of schema identifiers to validation functions, as well as two lookup functions:
+The compiled code is an ES string, and exports `schema` as a map of schema identifiers to validation functions, as well as two lookup functions:
 
 ```js
-import schemas from '/path/to/compiled.js'
-console.log(schemas) // => { getSchema: Function, getId: Function, '#/components/schemas/task': Function, ... }
+import { schemas, getSchema, getId } from '/path/to/compiled.js'
 ```
 
 If you know the fully-resolved schema id, you can access the validation function explicitly:
 
 ```js
-import schemas from '/path/to/compiled.js'
+import { schemas } from '/path/to/compiled.js'
 const validate = schemas['#/components/schema/error']
 const valid = validate({ code: 404 })
 if (!valid) console.log(validate.errors)
@@ -91,15 +85,21 @@ For example, given a definition like this:
 Using the `getSchema` function to get the schema:
 
 ```js
-import schemas from '/path/to/compiled'
+import { getId, getSchema } from '/path/to/compiled'
 const path = [ 'paths', '/api/v1/users/{userId}', 'get', 'responses', 'default', 'content', 'application/json', 'schema' ]
 // get the schema id:
-schemas.getId(...path) // => "#/components/schema/error"
+getId(...path) // => "#/components/schema/error"
 // or get the validation function:
-const validate = schemas.getSchema(...path) // => function
+const validate = getSchema(...path) // => function
 ```
 
-> **Note:** the functions take `n` parameters, *not* an array. E.g. you need `getId('path', 'to', 'thing')` and *not* `getId([ 'path', 'to', 'thing' ])`.
+**Note:** the functions can take either a string, where each path segment is URI-escaped, or a spread array. For example:
+
+- Valid: `getId('path', 'to', 'foo/bar')`
+- Also Valid: `getId('path/to/foo%2Fbar')` (the `/` URI-encodes to `%2F`)
+- *Not* Valid: `getId([ 'path', 'to', 'foo/bar' ])`
+
+It is recommended to use the array version if possible, since it won't incur the cost of splitting and URI-unescaping every time something is accessed.
 
 ## CLI `ajv-openapi-compile`
 
@@ -107,7 +107,6 @@ The CLI takes the following parameters:
 
 - `---definition, -d` (String) - The path to the definition JSON file.
 - `---output, -o` (String) - The path to write the compiled AJV validation code.
-- `--standalone, -s` (Boolean) - Whether to output the fully resolved standalone code. (Default: `true`)
 
 For convenience and compatability with other tooling, the `definition` parameter also supports importing JavaScript files, and will follow this algorithm:
 
@@ -120,14 +119,13 @@ For convenience and compatability with other tooling, the `definition` parameter
 
 To be considered valid, the imported schema definition must have a `paths` object, with at least one "Path Object" defined.
 
-## API: `function(definition: Object) => { standalone: String, unresolved: String }`
+## API: `function(definition: Object) => { code: String }`
 
 The function simply takes a valid OpenAPI 3.x object.
 
 It returns an object with the following properties:
 
-- `standalone: String` - The compiled code, with all `import` and `require` statements resolved and placed inline.
-- `unresolved: String` - The compiled code as a string, with no `import` or `require` statements resolved inline.
+- `code: String` - The compiled code, with all `import` and `require` statements resolved and placed inline.
 
 ## License
 

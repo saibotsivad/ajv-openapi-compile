@@ -14,8 +14,9 @@
     "./package.json": "./package.json"
   },
   "scripts": {
+    "lint": "eslint '**/*.js'",
     "prepublish": "npm run build",
-    "pretest": "node ./test/pre-test.js",
+    "pretest": "npm run lint && node ./test/pre-test.js",
     "test": "npm run test-js && npm run test-json && npm run test-yaml",
     "test-json": "./bin.js -d ./test/build/definition.json -o ./test/build/compiled.js && node test/test.js",
     "test-js": "./bin.js -d ./test/definition.js -o ./test/build/compiled.js && node test/test.js",
@@ -51,6 +52,7 @@
   "homepage": "https://github.com/saibotsivad/ajv-openapi-compile",
   "devDependencies": {
     "bundt": "github:saibotsivad/bundt",
+    "eslint": "^8.2.0",
     "uvu": "^0.5.2"
   },
   "dependencies": {

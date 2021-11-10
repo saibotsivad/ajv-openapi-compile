@@ -1,4 +1,4 @@
-const __getSchemaId = (schemaTree, ...keypath) => {
+const getSchemaId = (schemaTree, ...keypath) => {
 	const _getSchema = (...keys) => {
 		let actualKeys = []
 		let node = schemaTree
@@ -14,3 +14,10 @@ const __getSchemaId = (schemaTree, ...keypath) => {
 	}
 	return `#/${_getSchema(...keypath).map(k => encodeURIComponent(k)).join('/')}`
 }
+
+const getKeypath = opt => opt.length === 1 && typeof opt[0] === 'string'
+	? opt[0].replace(/^#\//, '').split('/').map(s => decodeURIComponent(s))
+	: opt
+
+export const __getId = schemaTree => (...opt) => getSchemaId(schemaTree, ...getKeypath(opt))
+export const __getSchema = (schemaTree, schemas) => (...opt) => schemas[getSchemaId(schemaTree, ...getKeypath(opt))]

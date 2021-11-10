@@ -22,6 +22,13 @@ Change categories are:
 ### Removed
 ### Security
 
+## [0.0.5] - 2021-11-10
+### Added
+- Support for importing from an OpenAPI YAML file.
+### Changed
+- BREAKING CHANGE: Figured out how to use Rollup to output an ES file, so you'll need to re-read that if you're not using the CLI version. Also changed the exports so there's `{ schemas, getId, getSchema }` instead.
+- BREAKING CHANGE: Instead of trying to figure out a way to normalize the weird request/response body stuff, there's a schema tree maintained internally, which is used to look up the `$ref` path entirely. This means you just use the full path like you would, and ignore that there are `$ref` elements along the way.
+
 ## [0.0.3-0.0.4] - 2021-11-08
 ### Fixed
 - Bump version of `ajv` to try getting rid of a weird bug.
@@ -39,6 +46,7 @@ Change categories are:
 - Created the base project.
 
 [Unreleased]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...HEAD
+[0.0.5]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.4...v0.0.5
 [0.0.3-0.0.4]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...v0.0.1

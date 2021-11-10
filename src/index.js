@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises'
 import { URL } from 'node:url'
 import { join } from 'node:path'
 
@@ -21,19 +20,7 @@ const addSchema = (schema, $id) => {
 	if (errors) console.error('Error while adding schema!', $id, errors)
 }
 
-/**
- * Given an OpenAPI definition, compile into an AJV validation module string. Root level component aliasing
- * is not supported. E.g., a `components.responses` that has a $ref will throw.
- *
- * @param {Object} definition - The OpenAPI definition object.
- * @param {Object} [definition.components]
- * @param {Object} [definition.components.parameters]
- * @param {Object} [definition.components.responses]
- * @param {Object} [definition.components.schemas]
- * @param {Object} [definition.paths]
- * @return {Object}
- */
-export const compile = definition => {
+export const __compile = definition => {
 	const schemaTree = {}
 	const addToTree = (schema, ...keys) => {
 		const id = `#/${keys.map(k => encodeURIComponent(k)).join('/')}`
@@ -143,25 +130,30 @@ export const compile = definition => {
 	return { schemaCode: standaloneCode.default(ajv), schemaTree }
 }
 
-export const compileAndBuild = async (definitionObject) => {
-	const { schemaCode, schemaTree } = compile(definitionObject)
-	const getSchemaIdFunction = await readFile(join(__dirname, 'get-schema-id.js'), 'utf8')
+/**
+ * Given an OpenAPI definition, compile into an AJV validation module string.
+ *
+ * @param {Object} definition - The OpenAPI definition object.
+ * @return {Promise<{ code: String }>} - The returned compiled code.
+ */
+export const compile = async (definition) => {
+	const { schemaCode, schemaTree } = __compile(definition)
 
-	const unresolved = `${schemaCode};
-
+	const generatedCode = `/* GENERATED CODE */
 const __schemaTree = ${JSON.stringify(schemaTree)};
-${getSchemaIdFunction};
-const __getKeypath = opt => opt.length === 1 && typeof opt[0] === 'string'
-	? opt[0].replace(/^#\\//, '').split('/').map(s => decodeURIComponent(s))
-	: opt;
-exports['getId'] = (...opt) => __getSchemaId(__schemaTree, ...__getKeypath(opt));
-exports['getSchema'] = (...opt) => exports[__getSchemaId(__schemaTree, ...__getKeypath(opt))];
+import * as ajvSchemas from './virtual-ajv-schemas.cjs';
+import { __getId, __getSchema } from '${join(__dirname, 'schema-helpers.js')}';
+export { ajvSchemas as schemas }
+export const getId = __getId(__schemaTree)
+export const getSchema = __getSchema(__schemaTree, ajvSchemas)
 `
 
 	const virtualLoader = () => ({
 		name: 'virtual-loader',
-		resolveId: source => source === 'virtual-module.js' ? source : null,
-		load: id => id === 'virtual-module.js' ? unresolved : null,
+		resolveId: source => source === 'virtual-module.js' || source === './virtual-ajv-schemas.cjs' ? source : null,
+		load: id => {
+			return id === 'virtual-module.js' ? generatedCode : (id === './virtual-ajv-schemas.cjs' ? schemaCode : null)
+		},
 	})
 
 	const bundle = await rollup({
@@ -177,8 +169,8 @@ exports['getSchema'] = (...opt) => exports[__getSchemaId(__schemaTree, ...__getK
 		format: 'es',
 	})
 	if (output.length > 1) throw new Error('Unexpected Rollup output!')
-	const standalone = output[0].code
+	const code = output[0].code
 	await bundle.close()
 
-	return { standalone, unresolved }
+	return { code }
 }
