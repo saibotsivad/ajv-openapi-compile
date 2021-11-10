@@ -22,7 +22,7 @@ Change categories are:
 ### Removed
 ### Security
 
-## [0.0.5-0.0.6] - 2021-11-10
+## [0.0.5-0.0.7] - 2021-11-10
 ### Added
 - Support for importing from an OpenAPI YAML file.
 ### Changed
@@ -46,7 +46,7 @@ Change categories are:
 - Created the base project.
 
 [Unreleased]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...HEAD
-[0.0.5-0.0.6]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.4...v0.0.6
+[0.0.5-0.0.7]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.4...v0.0.7
 [0.0.3-0.0.4]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...v0.0.1

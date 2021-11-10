@@ -148,11 +148,17 @@ export const getId = __getId(__schemaTree)
 export const getSchema = __getSchema(__schemaTree, ajvSchemas)
 `
 
+	// I can't figure out what this is for, in the compiled code it gets inserted but
+	// doesn't get referenced anywhere. Possibly mutating a global? Gross. Anyway, it
+	// links to this github repo, but I didn't find it helpful at all.
+	// https://github.com/ajv-validator/ajv/issues/889
+	const modifiedSchemaCode = schemaCode.replace('const func0 = require("ajv/dist/runtime/equal").default', '')
+
 	const virtualLoader = () => ({
 		name: 'virtual-loader',
 		resolveId: source => source === 'virtual-module.js' || source === './virtual-ajv-schemas.cjs' ? source : null,
 		load: id => {
-			return id === 'virtual-module.js' ? generatedCode : (id === './virtual-ajv-schemas.cjs' ? schemaCode : null)
+			return id === 'virtual-module.js' ? generatedCode : (id === './virtual-ajv-schemas.cjs' ? modifiedSchemaCode : null)
 		},
 	})
 
@@ -161,15 +167,17 @@ export const getSchema = __getSchema(__schemaTree, ajvSchemas)
 		plugins: [
 			virtualLoader(),
 			nodeResolve(),
-			commonjs(),
+			commonjs({
+				transformMixedEsModules: true,
+			}),
 		],
 	})
-	const { output } = await bundle.generate({
+	const result = await bundle.generate({
 		inlineDynamicImports: true,
 		format: 'es',
 	})
-	if (output.length > 1) throw new Error('Unexpected Rollup output!')
-	const code = output[0].code
+	if (result.output.length > 1) throw new Error('Unexpected Rollup output!')
+	const code = result.output[0].code
 	await bundle.close()
 
 	return { code }
