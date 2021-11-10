@@ -16,10 +16,10 @@
   "scripts": {
     "prepublish": "npm run build",
     "pretest": "node ./test/pre-test.js",
-    "test": "npm run test-js && npm run test-json && npm run test-script",
-    "test-json": "./bin.js -d ./test/definition.json -o ./test/compiled.cjs && node test/test.js",
-    "test-js": "./bin.js -d ./test/definition.js -o ./test/compiled.cjs && node test/test.js",
-    "test-script": "node test/test.js",
+    "test": "npm run test-js && npm run test-json && npm run test-yaml",
+    "test-json": "./bin.js -d ./test/build/definition.json -o ./test/build/compiled.js && node test/test.js",
+    "test-js": "./bin.js -d ./test/definition.js -o ./test/build/compiled.js && node test/test.js",
+    "test-yaml": "./bin.js -d ./test/build/definition.yaml -o ./test/build/compiled.js && node test/test.js",
     "build": "bundt src/index.js"
   },
   "repository": {
@@ -54,8 +54,13 @@
     "uvu": "^0.5.2"
   },
   "dependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "ajv": "^8.7.1",
     "ajv-formats": "^2.1.1",
-    "mri": "^1.2.0"
+    "js-yaml": "^4.1.0",
+    "just-safe-set": "^4.0.0",
+    "mri": "^1.2.0",
+    "rollup": "^2.59.0"
   }
 }

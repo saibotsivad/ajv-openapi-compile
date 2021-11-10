@@ -12,4 +12,4 @@ globbed-*.js
 
 # built things
 /dist
-/test/compiled.cjs
+/test/build

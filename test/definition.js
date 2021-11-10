@@ -10,6 +10,31 @@ export const definition = {
 					type: 'string',
 				},
 			},
+			aliasedTaskId: {
+				$ref: '#/components/parameters/taskId'
+			}
+		},
+		requestBodies: {
+			task: {
+				content: {
+					'application/json': {
+						schema: {
+							type: 'object',
+							properties: {
+								id: { type: 'string' }
+							}
+						}
+					}
+				}
+			},
+			aliasedRequestBody: {
+				$ref: '#/components/requestBodies/task'
+			}
+		},
+		headers: {
+			aliasedHeader: {
+				$ref: '#/components/headers/cookie'
+			}
 		},
 		responses: {
 			error: {
@@ -26,6 +51,9 @@ export const definition = {
 					},
 				},
 			},
+			aliasedError: {
+				$ref: '#/components/responses/error'
+			}
 		},
 		schemas: {
 			error: {
@@ -92,6 +120,26 @@ export const definition = {
 		},
 	},
 	paths: {
+		'/api/v1/login': {
+			post: {
+				responses: {
+					204: {
+						description: 'The session cookie is set.',
+						headers: {
+							'Set-Cookie': {
+								description: 'The session cookie.',
+								schema: {
+									type: 'string'
+								}
+							}
+						}
+					},
+					default: {
+						$ref: '#/components/responses/error',
+					},
+				},
+			}
+		},
 		'/api/v1/tasks': {
 			get: {
 				responses: {

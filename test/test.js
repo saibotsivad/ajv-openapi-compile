@@ -1,9 +1,14 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
-import schemas from './compiled.cjs'
+import schemas from './build/compiled.js'
 
 const expectedSchemaIds = [
-	'#/components/parameters/taskId'
+	'#/components/parameters/taskId/schema'
+]
+
+const expectedSchemaIdAliasToId = [
+	[ [ 'components', 'parameters', 'aliasedTaskId', 'schema' ], '#/components/parameters/taskId/schema' ],
+	[ [ 'components', 'requestBodies', 'aliasedRequestBody', 'content', 'application/json', 'schema' ], '#/components/requestBodies/task/content/application%2Fjson/schema' ]
 ]
 
 test('validate that the schemas are getting built correctly', () => {
@@ -12,7 +17,11 @@ test('validate that the schemas are getting built correctly', () => {
 		assert.type(schemas[id], 'function', `is a function: ${id}`)
 	}
 
-	const validate = schemas['#/components/parameters/taskId']
+	for (const [ aliasId, finalId ] of expectedSchemaIdAliasToId) {
+		assert.equal(schemas.getId(...aliasId), finalId, `alias points to correct final id: ${aliasId}`)
+	}
+
+	const validate = schemas['#/components/parameters/taskId/schema']
 	const valid1 = validate('aaa')
 	assert.ok(valid1, 'it should be good as a string')
 	const valid2 = validate(111)

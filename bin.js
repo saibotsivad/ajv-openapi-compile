@@ -1,14 +1,20 @@
 #!/usr/bin/env node
 
 import { readFileSync, writeFileSync } from 'node:fs'
+import { load } from 'js-yaml'
 import mri from 'mri'
-import { compile } from './src/index.js'
+import { compileAndBuild } from './src/index.js'
 
-let { definition, d, output, o } = mri(process.argv.slice(2))
+let { definition, d, output: outputFilePath, o, standalone: outputStandalone, s } = mri(process.argv.slice(2))
 definition = definition || d
-output = output || o
-if (!definition || !output) {
-	console.log('Must specify definition file and output file.\n  --definition, -d   Path to the OpenAPI definition file.\n  --output, -o       Filename and path to write compiled output.')
+outputFilePath = outputFilePath || o
+outputStandalone = (outputStandalone || s) !== 'false'
+if (!definition || !outputFilePath) {
+	console.log(`Must specify definition file and output file:
+	--definition, -d   Path to the OpenAPI definition file.
+	--output, -o       Filename and path to write compiled output.
+Optional parameter:
+	--standalone, -s   Output file is fully resolved standalone. (Default: true)`)
 	process.exit(1)
 }
 
@@ -16,6 +22,8 @@ if (!definition || !output) {
 let definitionObject
 if (definition.endsWith('.json')) {
 	definitionObject = JSON.parse(readFileSync(definition, 'utf8'))
+} else if (definition.endsWith('.yaml') || definition.endsWith('.yml')) {
+	definitionObject = load(readFileSync(definition, 'utf8'))
 } else {
 	const imported = await import(definition)
 	if (imported.definition?.paths) definitionObject = imported.definition
@@ -27,6 +35,7 @@ if (!definitionObject) {
 	process.exit(1)
 }
 
-const codeString = compile(definitionObject)
+const { standalone, unresolved } = await compileAndBuild(definitionObject)
 
-writeFileSync(output, codeString, 'utf8')
+if (outputStandalone) writeFileSync(outputFilePath, standalone, 'utf8')
+else writeFileSync(outputFilePath, unresolved, 'utf8')
