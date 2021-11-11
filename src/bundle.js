@@ -15,6 +15,8 @@ export const bundle = async schemaCode => {
 	// https://github.com/ajv-validator/ajv/issues/889
 	// const modifiedSchemaCode = schemaCode.replace('const func0 = require("ajv/dist/runtime/equal").default', '')
 
+	schemaCode = 'const ____map = {};\n\n' + schemaCode.replaceAll('exports[', '____map[') + '\n\nmodule.exports = ____map;\n'
+
 	const virtualLoader = () => ({
 		name: 'virtual-loader',
 		resolveId: source => source === 'virtual-module.cjs'? source : null,
@@ -29,13 +31,14 @@ export const bundle = async schemaCode => {
 			virtualLoader(),
 			nodeResolve(),
 			commonjs({
-				// transformMixedEsModules: true,
+				transformMixedEsModules: true,
 			}),
 		],
 	})
 	const result = await bundle.generate({
 		inlineDynamicImports: true,
 		format: 'es',
+		exports: 'default',
 	})
 	if (result.output.length > 1) throw new Error('Unexpected Rollup output!')
 	const code = result.output[0].code

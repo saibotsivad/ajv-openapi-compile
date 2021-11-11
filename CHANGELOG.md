@@ -22,7 +22,7 @@ Change categories are:
 ### Removed
 ### Security
 
-## [0.0.5-0.0.9] - 2021-11-10
+## [0.0.5-0.0.10] - 2021-11-11
 ### Added
 - Support for importing from an OpenAPI YAML file.
 - Outputs the compiled schema code, as well as a tree used for `$ref` resolution, and `getIdString`, `getIdArray`, and `getSchema` helper functions exported from the main.
@@ -47,7 +47,7 @@ Change categories are:
 - Created the base project.
 
 [Unreleased]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...HEAD
-[0.0.5-0.0.9]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.4...v0.0.9
+[0.0.5-0.0.10]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.4...v0.0.10
 [0.0.3-0.0.4]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...v0.0.1
