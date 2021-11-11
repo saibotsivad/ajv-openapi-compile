@@ -1,6 +1,9 @@
+import { URL } from 'node:url'
 import { rollup } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+
+const __dirname = new URL('.', import.meta.url).pathname
 
 /**
  * Given an OpenAPI definition, compile into an AJV validation module string.
@@ -25,11 +28,14 @@ export const bundle = async schemaCode => {
 		},
 	})
 
+	// ajv/dist/runtime/equal
 	const bundle = await rollup({
 		input: 'virtual-module.cjs',
 		plugins: [
 			virtualLoader(),
-			nodeResolve(),
+			nodeResolve({
+				rootDir: __dirname,
+			}),
 			commonjs({
 				transformMixedEsModules: true,
 			}),
