@@ -22,12 +22,13 @@ Change categories are:
 ### Removed
 ### Security
 
-## [0.0.5-0.0.7] - 2021-11-10
+## [0.0.5-0.0.9] - 2021-11-10
 ### Added
 - Support for importing from an OpenAPI YAML file.
+- Outputs the compiled schema code, as well as a tree used for `$ref` resolution, and `getIdString`, `getIdArray`, and `getSchema` helper functions exported from the main.
 ### Changed
 - BREAKING CHANGE: Figured out how to use Rollup to output an ES file, so you'll need to re-read that if you're not using the CLI version. Also changed the exports so there's `{ schemas, getId, getSchema }` instead.
-- BREAKING CHANGE: Instead of trying to figure out a way to normalize the weird request/response body stuff, there's a schema tree maintained internally, which is used to look up the `$ref` path entirely. This means you just use the full path like you would, and ignore that there are `$ref` elements along the way.
+- BREAKING CHANGE: Instead of trying to figure out a way to normalize the weird request/response body stuff, you're given a schema tree which is used to traverse the `$ref` references all the way up to the actual schema. This means you just use the full path like you would, and ignore that there are `$ref` elements along the way.
 
 ## [0.0.3-0.0.4] - 2021-11-08
 ### Fixed
@@ -46,7 +47,7 @@ Change categories are:
 - Created the base project.
 
 [Unreleased]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...HEAD
-[0.0.5-0.0.7]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.4...v0.0.7
+[0.0.5-0.0.9]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.4...v0.0.9
 [0.0.3-0.0.4]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...v0.0.1

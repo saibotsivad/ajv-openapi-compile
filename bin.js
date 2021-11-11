@@ -5,13 +5,15 @@ import { load } from 'js-yaml'
 import mri from 'mri'
 import { compile } from './src/index.js'
 
-let { definition, d, output: outputFilePath, o } = mri(process.argv.slice(2))
+let { definition, d, schema: schemaFilePath, s, tree: treeFilePath, t } = mri(process.argv.slice(2))
 definition = definition || d
-outputFilePath = outputFilePath || o
-if (!definition || !outputFilePath) {
-	console.log(`Must specify definition file and output file:
+schemaFilePath = schemaFilePath || s
+treeFilePath = treeFilePath || t
+if (!definition || !schemaFilePath) {
+	console.log(`Must specify definition file and output schema file:
 	--definition, -d   Path to the OpenAPI definition file.
-	--output, -o       Filename and path to write compiled output.`)
+	--schema, -s         Filename and path to write compiled schemas.
+	--tree, -t         Filename and path to write generated schema tree. (Optional.)`)
 	process.exit(1)
 }
 
@@ -33,9 +35,10 @@ const work = async () => {
 		process.exit(1)
 	}
 
-	const { code } = await compile(definitionObject)
+	const { code, tree } = await compile(definitionObject)
 
-	writeFileSync(outputFilePath, code, 'utf8')
+	writeFileSync(schemaFilePath, code, 'utf8')
+	if (treeFilePath) writeFileSync(treeFilePath, tree, 'utf8')
 }
 
-work().then(() => console.log('Wrote to file:', outputFilePath))
+work().then(() => console.log('Wrote to file:', schemaFilePath))

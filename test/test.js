@@ -1,6 +1,8 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
-import { schemas, getId, getSchema } from './build/compiled.js'
+import schemas from './build/schema.js'
+import tree from './build/tree.js'
+import { getIdString, getSchema } from '../src/index.js'
 
 const expectedSchemaIds = [
 	'#/components/parameters/taskId/schema',
@@ -25,14 +27,14 @@ test('validate that the schemas are getting built correctly', () => {
 		assert.type(schemas[id], 'function', `is a function: ${id}`)
 	}
 
-	for (const [ aliasId, finalId ] of expectedSchemaIdAliasToId) {
-		assert.equal(getId(...aliasId), finalId, `alias points to correct final id: ${aliasId}`)
+	for (const [ path, finalId ] of expectedSchemaIdAliasToId) {
+		assert.equal(getIdString({ tree, path }), finalId, `alias points to correct final id: ${path}`)
 	}
 })
 
 test('components.parameters', () => {
-	const run = id => {
-		const validate = getSchema(id)
+	const run = path => {
+		const validate = getSchema({ tree, schemas, path })
 		const valid1 = validate('aaa')
 		assert.ok(valid1, 'it should be good as a string')
 		const valid2 = validate(111)

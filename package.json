@@ -9,9 +9,9 @@
     "lint": "eslint '**/*.js'",
     "pretest": "npm run lint && node ./test/pre-test.js",
     "test": "npm run test-js && npm run test-json && npm run test-yaml",
-    "test-json": "./bin.js -d ./test/build/definition.json -o ./test/build/compiled.js && node test/test.js",
-    "test-js": "./bin.js -d ./test/definition.js -o ./test/build/compiled.js && node test/test.js",
-    "test-yaml": "./bin.js -d ./test/build/definition.yaml -o ./test/build/compiled.js && node test/test.js"
+    "test-json": "./bin.js -d ./test/build/definition.json -s ./test/build/schema.js -t ./test/build/tree.js && node test/test.js",
+    "test-js": "./bin.js -d ./test/definition.js -s ./test/build/schema.js -t ./test/build/tree.js && node test/test.js",
+    "test-yaml": "./bin.js -d ./test/build/definition.yaml -s ./test/build/schema.js -t ./test/build/tree.js && node test/test.js"
   },
   "repository": {
     "type": "git",
