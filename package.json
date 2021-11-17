@@ -1,6 +1,6 @@
 {
   "name": "ajv-openapi-compile",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Generate a compiled AJV validation module from an OpenAPI definition.",
   "bin": "bin.js",
   "type": "module",
