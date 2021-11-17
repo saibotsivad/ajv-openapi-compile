@@ -12,11 +12,25 @@ const __dirname = new URL('.', import.meta.url).pathname
  * @return {Promise<{ code: String }>} - The returned compiled code.
  */
 export const bundle = async schemaCode => {
-	// I can't figure out what this is for, in the compiled code it gets inserted but
-	// doesn't get referenced anywhere. Possibly mutating a global? Gross. Anyway, it
-	// links to this github repo, but I didn't find it helpful at all.
-	// https://github.com/ajv-validator/ajv/issues/889
-	// const modifiedSchemaCode = schemaCode.replace('const func0 = require("ajv/dist/runtime/equal").default', '')
+	// Related to this issue: https://github.com/ajv-validator/ajv/issues/1361
+	// The issue is claimed to be resolved, but in fact is still going on.
+	// The code responsible for generating code is here: https://github.com/ajv-validator/ajv/blob/master/lib/standalone/index.ts#L52-L88
+	// but trying to read through to fix the problem makes me want to weep and then die.
+	// Instead, I'm going to do something that I would normally consider horrifyingly bad:
+	let overrideIndex = 0
+	schemaCode = schemaCode
+		.split(';')
+		.map(line => {
+			// if it has a validation reference we can replace it
+			if (/validate\d+/.test(line)) line = line.replaceAll(/validate\d+/g, `validate${overrideIndex}`)
+			// the assumption is that the function declaration is where
+			// we should increment, this is based on inspecting generated
+			// code, and not on any understanding of the despair-inducing
+			// gen-code in AJV.
+			if (/function\s+validate\d+/.test(line)) overrideIndex++
+			return line
+		})
+		.join(';')
 
 	schemaCode = 'const ____map = {};\n\n' + schemaCode.replaceAll('exports[', '____map[') + '\n\nmodule.exports = ____map;\n'
 
