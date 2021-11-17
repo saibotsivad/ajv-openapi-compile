@@ -13,6 +13,13 @@ export const definition = {
 			aliasedTaskId: {
 				$ref: '#/components/parameters/taskId',
 			},
+			filter: {
+				name: 'filter',
+				in: 'query',
+				schema: {
+					type: 'string',
+				},
+			},
 		},
 		requestBodies: {
 			task: {
@@ -103,26 +110,6 @@ export const definition = {
 					},
 				},
 			},
-			user: {
-				type: 'object',
-				properties: {
-					id: {
-						type: 'string',
-					},
-					type: {
-						type: 'string',
-						enum: [
-							'user',
-						],
-					},
-					meta: {
-						$ref: '#/components/schemas/meta',
-					},
-					attributes: {
-						type: 'object',
-					},
-				},
-			},
 		},
 	},
 	paths: {
@@ -146,117 +133,30 @@ export const definition = {
 				},
 			},
 		},
-		'/tasks': {
-			get: {
-				responses: {
-					200: {
-						content: {
-							'application/json': {
-								schema: {
-									type: 'object',
-									properties: {
-										data: {
-											type: 'array',
-											items: {
-												$ref: '#/components/schemas/task',
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-					default: {
-						$ref: '#/components/responses/error',
-					},
-				},
-			},
-			post: {
-				requestBody: {
-					content: {
-						'application/json': {
-							schema: {
-								type: 'object',
-								properties: {
-									data: {
-										$ref: '#/components/schemas/task',
-									},
-								},
-							},
-						},
-					},
-				},
-				responses: {
-					200: {
-						content: {
-							'application/json': {
-								schema: {
-									type: 'object',
-									properties: {
-										data: {
-											$ref: '#/components/schemas/task',
-										},
-									},
-								},
-							},
-						},
-					},
-					default: {
-						$ref: '#/components/responses/error',
-					},
-				},
-			},
-		},
 		'/tasks/{taskId}': {
 			parameters: [
 				{
 					$ref: '#/components/parameters/taskId',
 				},
-			],
-			get: {
-				responses: {
-					200: {
-						content: {
-							'application/json': {
-								schema: {
-									type: 'object',
-									properties: {
-										data: {
-											$ref: '#/components/schemas/task',
-										},
-									},
-								},
-							},
-						},
-					},
-					default: {
-						$ref: '#/components/responses/error',
-					},
-				},
-			},
-		},
-		'/users/{userId}': {
-			parameters: [
 				{
-					name: 'userId',
-					in: 'path',
-					required: true,
+					name: 'include',
+					in: 'query',
 					schema: {
 						type: 'string',
 					},
 				},
 			],
-			get: {
+			patch: {
 				parameters: [
 					{
-						name: 'include',
-						in: 'query',
+						name: 'X-Api-Token',
+						in: 'header',
 						schema: {
 							type: 'string',
-							enum: [
-								'tasks',
-							],
 						},
+					},
+					{
+						$ref: '#/components/parameters/filter',
 					},
 				],
 				responses: {
@@ -267,7 +167,7 @@ export const definition = {
 									type: 'object',
 									properties: {
 										data: {
-											$ref: '#/components/schemas/user',
+											$ref: '#/components/schemas/task',
 										},
 									},
 								},

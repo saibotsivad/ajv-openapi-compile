@@ -7,8 +7,8 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint '**/*.js'",
-    "pretest": "npm run lint && node ./test/pre-test.js",
-    "test": "npm run test-js && npm run test-json && npm run test-yaml",
+    "pretest": "rm -rf test/build && node ./test/pre-test.js",
+    "test": "npm run lint && npm run test-js && npm run test-json && npm run test-yaml",
     "test-json": "./bin.js -d ./test/build/definition.json -s ./test/build/schema.js -t ./test/build/tree.js && node test/test.js",
     "test-js": "./bin.js -d ./test/definition.js -s ./test/build/schema.js -t ./test/build/tree.js && node test/test.js",
     "test-yaml": "./bin.js -d ./test/build/definition.yaml -s ./test/build/schema.js -t ./test/build/tree.js && node test/test.js"
@@ -42,6 +42,7 @@
   "homepage": "https://github.com/saibotsivad/ajv-openapi-compile",
   "devDependencies": {
     "eslint": "^8.2.0",
+    "pointer-props": "^1.1.2",
     "uvu": "^0.5.2"
   },
   "dependencies": {

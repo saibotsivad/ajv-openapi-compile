@@ -31,18 +31,11 @@ await writeFile('/path/to/compiled.js', code, 'utf8')
 await writeFile('/path/to/tree.js', tree, 'utf8')
 ```
 
-The output from the `compile` function contains the `code` property, which has all imports/requires resolved and concatenated into the single string, as well as a `tree` property which is part of an optional schema lookup tool.
+The output from the `compile` function contains the `code` property, which has all imports/requires resolved and concatenated into the single string.
 
 ## Use Built Code
 
 The compiled `code` is an ES string, and exports `schema` as the default, which is a map of schema identifiers to validation functions.
-
-The compiled `tree` is a simple object, used by the lookup functions to resolve inner `$ref` references.
-
-```js
-import schemas from '/path/to/compiled.js'
-import tree from '/path/to/tree.js'
-```
 
 If you know the fully-resolved schema id, you can access the validation function explicitly:
 
@@ -53,80 +46,22 @@ const valid = validate({ code: 404 })
 if (!valid) console.log(validate.errors)
 ```
 
-If you don't know the fully-resolved schema id, you can use the `getIdString` to get it, or `getSchema` to get the validation function directly. These functions will resolve all `$ref` paths to get to the actual schema id/function:
+> **Note:** The schema identifiers are escaped using the JSON Pointer (RFC6901) specs, which turns `~` into `~0` and `/` into `~1`.
+
+If you don't know the fully-resolved schema id, you can use something like [pointer-props](https://github.com/saibotsivad/pointer-props) to navigate the structure and resolve to the correct id:
 
 ```js
-import { getIdString, getSchema } from 'ajv-openapi-compile'
+import { resolve, toPointer } from 'pointer-props'
+import { readFile } from 'node:fs'
 import schemas from '/path/to/compiled.js'
-import tree from '/path/to/tree.js'
+const definition = JSON.parse(await readFile('/path/to/openapi.json', 'utf8'))
 // lookup the id
-getIdString({ tree, path: '#/path/to/schema' }) // => '#/path/to/fully/resolved/schema'
-// or the validation function directly
-const validate = getSchema({ tree, schemas, path: '#/components/schema/error' })
+const id = resolve(definition, '#/path/to/schema') // => '/path/to/fully/resolved/schema'
+// note the relative reference requires "#" as the prefix
+const validate = schemas['#' + id]
 const valid = validate({ code: 404 })
 if (!valid) console.log(validate.errors)
 ```
-
-## Path as String or Array
-
-Note that, when using the `getIdString`, `getIdArray`, or `getSchema` functions, the `path` property can be given in two forms:
-
-1. An array of non-encuded strings, e.g. `[ 'components', 'schema', 'foo/bar' ]` where the schema name is `foo/bar` (a very abnormal and not recommended option).
-2. The normal reference string, with path elements URI encoded, e.g. `#/components/schema/foo%2Fbar` (since `/` is `%2F` when URI encoded).
-
-## Bigger Example
-
-For example, given a definition like this:
-
-```json
-{
-	"paths": {
-		"/users": {
-			"get": {
-				"responses": {
-					"default": { "$ref": "#/components/responses/error" }
-				}
-			}
-		}
-	},
-	"components": {
-		"responses": {
-			"content": {
-				"application/json": {
-					"schema": { "$ref": "#/components/schemas/error" }
-				}
-			}
-		},
-		"schemas": {
-			"error": {
-				"type": "object",
-				"properties": {
-					"code": { "type": "number" }
-				}
-			}
-		}
-	}
-}
-```
-
-Using the `getSchema` function to get the schema:
-
-```js
-import { getId, getSchema } from '/path/to/compiled'
-const path = [ 'paths', '/api/v1/users/{userId}', 'get', 'responses', 'default', 'content', 'application/json', 'schema' ]
-// get the schema id:
-getId(...path) // => "#/components/schema/error"
-// or get the validation function:
-const validate = getSchema(...path) // => function
-```
-
-**Note:** the functions can take either a string, where each path segment is URI-escaped, or a spread array. For example:
-
-- Valid: `getId('path', 'to', 'foo/bar')`
-- Also Valid: `getId('path/to/foo%2Fbar')` (the `/` URI-encodes to `%2F`)
-- *Not* Valid: `getId([ 'path', 'to', 'foo/bar' ])`
-
-It is recommended to use the array version if possible, since it won't incur the cost of splitting and URI-unescaping every time something is accessed.
 
 ## CLI `ajv-openapi-compile`
 

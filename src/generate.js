@@ -6,6 +6,8 @@ import set from 'just-safe-set'
 const ajv = new AJV({ code: { source: true } })
 addFormats(ajv) // for OpenAPI schemas
 
+const encode = string => string.toString().replaceAll('~', '~0').replaceAll('/', '~1')
+
 const addSchema = (schema, $id) => {
 	schema.$id = $id
 	const { errors } = ajv.addSchema(schema, $id)
@@ -21,7 +23,7 @@ const addSchema = (schema, $id) => {
 export const generate = definition => {
 	const schemaTree = {}
 	const addToTree = (schema, ...keys) => {
-		const id = `#/${keys.map(k => encodeURIComponent(k)).join('/')}`
+		const id = `#/${keys.map(k => encode(k)).join('/')}`
 		set(
 			schemaTree,
 			keys,
@@ -78,7 +80,7 @@ export const generate = definition => {
 	for (const path in (definition.paths || {})) {
 		// parameters common to the path (an array)
 		let pathParamIndex = 0
-		for (const parameter of (path.parameters || [])) {
+		for (const parameter of (definition.paths[path].parameters || [])) {
 			addToTreeRefOrSchema(parameter, 'paths', path, 'parameters', pathParamIndex)
 			pathParamIndex++
 		}
@@ -116,7 +118,7 @@ export const generate = definition => {
 						}
 						if (response.content) {
 							for (const mediaType in response.content) {
-								addToTreeRefOrSchema(response.content[mediaType].schema, ...statusKeys, 'content', mediaType)
+								addToTreeRefOrSchema(response.content[mediaType], ...statusKeys, 'content', mediaType)
 							}
 						}
 					}

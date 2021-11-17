@@ -22,6 +22,10 @@ Change categories are:
 ### Removed
 ### Security
 
+## [0.0.12] - 2021-11-16
+### Changed
+- BREAKING CHANGE: Dropped the "tree" structure to look up `$ref` linking, in favor of using e.g. [pointer-props](https://github.com/saibotsivad/pointer-props) which has that functionality built in already. Simplifies this lib a bit.
+
 ## [0.0.5-0.0.11] - 2021-11-11
 ### Added
 - Support for importing from an OpenAPI YAML file.
@@ -47,6 +51,7 @@ Change categories are:
 - Created the base project.
 
 [Unreleased]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.0...HEAD
+[0.0.12]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.11...v0.0.12
 [0.0.5-0.0.11]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.4...v0.0.11
 [0.0.3-0.0.4]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/saibotsivad/ajv-openapi-compile/compare/v0.0.1...v0.0.2
