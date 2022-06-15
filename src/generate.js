@@ -3,7 +3,7 @@ import addFormats from 'ajv-formats'
 import standaloneCode from 'ajv/dist/standalone/index.js'
 import set from 'just-safe-set'
 
-const ajv = new AJV({ code: { source: true } })
+const ajv = new AJV({ code: { source: true }, keywords: [ 'example' ] })
 addFormats(ajv) // for OpenAPI schemas
 
 const encode = string => string.toString().replaceAll('~', '~0').replaceAll('/', '~1')
